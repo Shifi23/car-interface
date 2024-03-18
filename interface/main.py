@@ -2,10 +2,7 @@ from fastapi import FastAPI, HTTPException
 import uvicorn
 from pydantic import BaseModel
 
-app = FastAPI(
-    title="car-interface",
-    version="0.0.1"
-)
+app = FastAPI(title="car-interface", version="0.0.1")
 
 
 class Item(BaseModel):
@@ -18,7 +15,7 @@ items = []
 
 @app.get("/")
 def root():
-    return {"Hello": "World"}
+    return {"Hello": "Worldd"}
 
 
 @app.post("/items")
@@ -38,8 +35,3 @@ def get_item(item_id: int) -> Item:
         return items[item_id]
     else:
         raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
-    
-
-def start():
-    """Launched with `poetry run start` at root level"""
-    uvicorn.run("interface.main:app", host="0.0.0.0", port=8000, reload=True)
