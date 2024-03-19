@@ -1,0 +1,20 @@
+{
+	"name": "car-interface-dev",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "car-interface",
+	"workspaceFolder": "/workspaces/car-interface",
+	"overrideCommand": false,
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"visualstudioexptteam.vscodeintellicode"
+			],
+			"settings": {}
+		}
+	},
+	"forwardPorts": [
+		8000
+	],
+	"onCreateCommand": "cd /workspaces/car-interface && poetry install"
+}

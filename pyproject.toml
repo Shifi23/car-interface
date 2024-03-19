@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "car-interface"
+version = "0.1.0"
+description = "car-react-flask-interface"
+authors = ["Shuhrat Talukder"]
+readme = "README.md"
+packages = [{include = "interface"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+uvicorn = "^0.28.0"
+pyfirmata = "^1.1.0"
+obd = "^0.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+start = "interface.main:start"

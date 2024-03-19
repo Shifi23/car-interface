@@ -1,0 +1,13 @@
+version: "1.0"
+
+services:
+  car-interface:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    command: sleep infinity
+    privileged: true
+    network_mode: "host"
+    volumes:
+     - ..:/workspaces/car-interface:cached
