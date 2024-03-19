@@ -1,37 +1,20 @@
-from fastapi import FastAPI, HTTPException
-import uvicorn
-from pydantic import BaseModel
+from fastapi import FastAPI
+from interface.controls import controls_api
+from interface.obd import obd_api
 
-app = FastAPI(title="car-interface", version="0.0.1")
+app = FastAPI(title="Car Interface APIs", version="0.0.1")
 
+# @app.get("/")
+# async def car_interface():
+#     return {"This is Shuhrat's Car"}
 
-class Item(BaseModel):
-    text: str = None
-    is_done: bool = False
+## add routes here
+app.include_router(
+    controls_api.router,
+    prefix="/controls"
+)
 
-
-items = []
-
-
-@app.get("/")
-def root():
-    return {"Hello": "Worljjjdd"}
-
-
-@app.post("/items")
-def create_item(item: Item):
-    items.append(item)
-    return items
-
-
-@app.get("/items", response_model=list[Item])
-def list_items(limit: int = 10):
-    return items[0:limit]
-
-
-@app.get("/items/{item_id}", response_model=Item)
-def get_item(item_id: int) -> Item:
-    if item_id < len(items):
-        return items[item_id]
-    else:
-        raise HTTPException(status_code=404, detail=f"Item {item_id} not found")
+app.include_router(
+    obd_api.router,
+    prefix="/obd"
+)

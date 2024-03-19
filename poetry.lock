@@ -114,6 +114,40 @@ files = [
 ]
 
 [[package]]
+name = "obd"
+version = "0.7.2"
+description = "Serial module for handling live sensor data from a vehicle's OBD-II port"
+optional = false
+python-versions = "*"
+files = [
+    {file = "obd-0.7.2.tar.gz", hash = "sha256:20d38c9ded3daad1e8affab3ff367a70788d4f29ac77ab7aacddc6a6d2a43d61"},
+]
+
+[package.dependencies]
+pint = "==0.20.*"
+pyserial = "==3.*"
+
+[[package]]
+name = "pint"
+version = "0.20.1"
+description = "Physical quantities module"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Pint-0.20.1-py3-none-any.whl", hash = "sha256:68afe65665542ee3ec99f69f043b1d39bfe7c6d61b786940157138fd08b838fb"},
+    {file = "Pint-0.20.1.tar.gz", hash = "sha256:387cf04078dc7dfe4a708033baad54ab61d82ab06c4ee3d4922b1e45d5626067"},
+]
+
+[package.extras]
+babel = ["babel (<=2.8)"]
+dask = ["dask"]
+numpy = ["numpy (>=1.19.5)"]
+pandas = ["pint-pandas (>=0.3)"]
+test = ["pytest", "pytest-cov", "pytest-mpl", "pytest-subtests"]
+uncertainties = ["uncertainties (>=3.1.6)"]
+xarray = ["xarray"]
+
+[[package]]
 name = "pydantic"
 version = "2.6.4"
 description = "Data validation using Python type hints"
@@ -224,6 +258,34 @@ files = [
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
+name = "pyfirmata"
+version = "1.1.0"
+description = "A Python interface for the Firmata procotol"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyFirmata-1.1.0-py2.py3-none-any.whl", hash = "sha256:03091ffd0b06a483d286d9738ead97a50c55cf1bf6b89a5bd0c420d0a7797420"},
+    {file = "pyFirmata-1.1.0.tar.gz", hash = "sha256:cc180d1b30c85a2bbca62c15fef1b871db048cdcfa80959968356d97bd3ff08e"},
+]
+
+[package.dependencies]
+pyserial = "*"
+
+[[package]]
+name = "pyserial"
+version = "3.5"
+description = "Python Serial Port Extension"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pyserial-3.5-py2.py3-none-any.whl", hash = "sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0"},
+    {file = "pyserial-3.5.tar.gz", hash = "sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb"},
+]
+
+[package.extras]
+cp2110 = ["hidapi"]
+
+[[package]]
 name = "sniffio"
 version = "1.3.1"
 description = "Sniff out which async library your code is running under"
@@ -284,4 +346,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "307d58ccd0a22d7142ba0a5520bfa0926ebb46fa58b50e558f46e5a2d2396ef0"
+content-hash = "9822d89ad2b4f38153b6ede614925c146a8227c3569fa69db54bd21253a896a7"
