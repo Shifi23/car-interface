@@ -1,14 +1,35 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
+from interface.database import get_db
+from interface.models import Controls
+from sqlalchemy.orm import Session
+from typing import Annotated
 
+class ControlStatusesBase(BaseModel):
+    locked: bool
+    lights_on: bool
+    engine_on: bool
+
+class ControlStatuses(ControlStatusesBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+db_dependany = Annotated[Session, Depends(get_db)]
 router = APIRouter(tags=["Controls"])
 
 @router.get("/status")
 async def get_control_statuses():
     return []
 
-@router.post("/lock")
-async def lock_car():
-    return 200
+@router.post("/lock", response_model=ControlStatuses)
+async def lock_car(status: ControlStatusesBase, db: db_dependany):
+    db_lock = Controls(ControlStatusesBase(locked=False, ))
+    db.add(db_lock)
+    db.commit()
+    db.refresh(db_lock)
+    return db_lock
 
 @router.delete("/lock")
 async def unlock_car():
