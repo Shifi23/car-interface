@@ -5,6 +5,7 @@ from interface.models import Controls
 from sqlalchemy.orm import Session
 from typing import Annotated, List
 from datetime import datetime
+from interface.controls.controls import test
 
 class ControlStatusesBase(BaseModel):
     locked: bool = False
@@ -62,6 +63,7 @@ async def unlock_car(db: db_dependany):
 @router.post("/lights")
 async def turn_on_lights(db: db_dependany):
     db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
+    test()
     update_status = {"lights_on": True}
     db_record |= update_status
     db_record = Controls(**db_record)

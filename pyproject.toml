@@ -10,9 +10,9 @@ packages = [{include = "interface"}]
 python = "^3.10"
 fastapi = "^0.110.0"
 uvicorn = "^0.28.0"
-pyfirmata = "^1.1.0"
 obd = "^0.7.2"
 sqlalchemy = "^2.0.28"
+pyfirmata2 = "^2.4.5"
 
 
 [build-system]
