@@ -329,14 +329,14 @@ files = [
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
-name = "pyfirmata"
-version = "1.1.0"
-description = "A Python interface for the Firmata procotol"
+name = "pyfirmata2"
+version = "2.4.5"
+description = "Use your Arduino as a data acquisition card under Python"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pyFirmata-1.1.0-py2.py3-none-any.whl", hash = "sha256:03091ffd0b06a483d286d9738ead97a50c55cf1bf6b89a5bd0c420d0a7797420"},
-    {file = "pyFirmata-1.1.0.tar.gz", hash = "sha256:cc180d1b30c85a2bbca62c15fef1b871db048cdcfa80959968356d97bd3ff08e"},
+    {file = "pyFirmata2-2.4.5-py3-none-any.whl", hash = "sha256:158e09114e6b325c1a1c02ac1b77c90d1f3a258fc917414648e594cb4a6c0ecb"},
+    {file = "pyFirmata2-2.4.5.tar.gz", hash = "sha256:a946387a0ac095255c0f9ff55618091439bc1a1b8ce6aa81097467d84b4f4ed9"},
 ]
 
 [package.dependencies]
@@ -504,4 +504,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b07ebb94878d5df4c5ab4b888b6caf0ea30cc7022aeac538bc81fbc2a7e88a97"
+content-hash = "c03364c92828faf73c3954c6169d6455bd8fbd0f2616ea585aa17d919a3eec96"
