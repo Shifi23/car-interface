@@ -48,7 +48,7 @@ def test():
         print(e, "No Connection to Relay Controller")
 
     finally:
-        board.analog[2].disable_reporting()
+        # board.analog[2].disable_reporting()
         board.exit()
 # else:
 
