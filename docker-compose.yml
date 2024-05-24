@@ -1,0 +1,18 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app
+    privileged: true
+
+  frontend:
+    build: ./car_dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./car_dashboard/src:/app/src
+      - ./car_dashboard/public:/app/public
+    depends_on:
+      - backend

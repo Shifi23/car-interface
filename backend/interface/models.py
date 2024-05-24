@@ -1,4 +1,4 @@
-from interface.database import Base
+from backend.interface.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, Float, TIMESTAMP
 import datetime
 

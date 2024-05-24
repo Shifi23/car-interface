@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from interface.database import get_db
-from interface.models import Controls
+from backend.interface.database import get_db
+from backend.interface.models import Controls
 from sqlalchemy.orm import Session
 from typing import Annotated, List
 from datetime import datetime
-from interface.controls.controls import test
+from backend.interface.controls.controls import test
 
 class ControlStatusesBase(BaseModel):
     locked: bool = False

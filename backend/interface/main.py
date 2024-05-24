@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from interface.controls import controls_api
-from interface.obd import obd_api
+from backend.interface.controls import controls_api
+from backend.interface.obd import obd_api
 from fastapi.middleware.cors import CORSMiddleware
-from interface.database import engine
-import interface.models
+from backend.interface.database import engine
+import backend.interface.models
 
-interface.models.Base.metadata.create_all(bind=engine)
+backend.interface.models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Car Interface APIs", version="0.0.1")
 
 origins = [
