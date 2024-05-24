@@ -19,4 +19,4 @@ RUN pip install --no-cache-dir poetry \
 
 
 #run the app
-CMD ["poetry", "run", "uvicorn", "interface.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "uvicorn", "backend.interface.main:app", "--host", "0.0.0.0", "--port", "8000"]
