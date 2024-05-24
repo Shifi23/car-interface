@@ -4,14 +4,15 @@ version = "0.1.0"
 description = "car-react-flask-interface"
 authors = ["Shuhrat Talukder"]
 readme = "README.md"
-packages = [{include = "interface"}]
+packages = [{include = "backend"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "^0.110.0"
 uvicorn = "^0.28.0"
-pyfirmata = "^1.1.0"
 obd = "^0.7.2"
+sqlalchemy = "^2.0.28"
+pyfirmata2 = "^2.4.5"
 
 
 [build-system]
@@ -20,4 +21,9 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.scripts]
-start = "interface.main:start"
+start = "backend.interface.main:app"
+
+
+[tool.taskipy.tasks]
+dev_dashboard = "cd car_dashboard && npm install && npm run start"
+build_dashboard = "cd car_dashboard && npm install && npm run build"

@@ -9,5 +9,6 @@ services:
     command: sleep infinity
     privileged: true
     network_mode: "host"
+    tty: true
     volumes:
      - ..:/workspaces/car-interface:cached
