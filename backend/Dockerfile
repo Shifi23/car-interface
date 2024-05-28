@@ -15,7 +15,7 @@ COPY . /app
 
 # Install poetry and dependencies
 RUN pip install --no-cache-dir poetry \
-    && poetry install --no-root --no-dev
+    && poetry install --no-root --only main
 
 
 #run the app
