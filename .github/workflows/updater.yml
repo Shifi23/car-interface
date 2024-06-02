@@ -1,8 +1,6 @@
 name: update car software
 
-on:
-  push:
-    branches: ["main"]
+on: workflow_dispatch
 
 jobs:
   update_car_sw:
