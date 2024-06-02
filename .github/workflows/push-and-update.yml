@@ -1,4 +1,4 @@
-name: Publish Docker image
+name: Push and Update Car Image
 
 on:
   release:
@@ -37,8 +37,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          
+
   update_car_sw:
+    needs: push_to_registry 
     runs-on: carpi-4
     steps:
       - name: pull latest image
