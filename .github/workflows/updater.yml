@@ -1,4 +1,4 @@
-name: update car software
+name: Update Car Software
 
 on: workflow_dispatch
 
