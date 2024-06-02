@@ -1,7 +1,9 @@
 name: update car software
+
 on:
-  release:
-    types: [published]
+  push:
+    branches: ["main"]
+
 jobs:
   update_car_sw:
     runs-on: carpi-4
