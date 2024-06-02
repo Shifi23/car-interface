@@ -1,7 +1,9 @@
 name: update car software
-
+on:
+  release:
+    types: [published]
 jobs:
-  update_docker_con:
+  update_car_sw:
     runs-on: carpi-4
     steps:
       - name: pull latest image
