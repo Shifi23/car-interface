@@ -1,0 +1,17 @@
+version: "2"
+authtoken: 23aSMK5bnY4b5SyuU0plxk50F97_26d3akpjPKgrZdEYyrgPw
+tunnels:
+  api:
+    proto: http
+    addr: 8000
+    domain: obliging-hedgehog-outgoing.ngrok-free.app
+    basic_auth:
+      - "shuhrat:101504aaa"
+
+  dashboard:
+    proto: http
+    addr: 3000
+
+  ssh:
+    proto: tcp
+    addr: 22

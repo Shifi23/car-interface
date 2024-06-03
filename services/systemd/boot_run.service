@@ -1,0 +1,10 @@
+[Unit]
+Description=Run script 30 seconds after boot
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'sleep 30 && /home/shuhrat/after_boot.sh'
+
+[Install]
+WantedBy=multi-user.target
