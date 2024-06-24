@@ -95,17 +95,19 @@ def test():
     #     RunningFlag = 0
     #     return RunningFlag
 
-    # def UnlockCar():
-    #     board.digital[UNL].write(0)
-    #     time.sleep(0.5)
-    #     board.digital[UNL].write(1)
-    #     time.sleep(0.5)
-    #     board.digital[UNL].write(0)
-    #     time.sleep(0.5)
-    #     board.digital[UNL].write(1)
-    #     time.sleep(0.5)
-    #     LocUL = "Unlocked"
-    #     return LocUL
+def UnlockCar():
+    port = pyfirmata2.Arduino.AUTODETECT
+    board = pyfirmata2.Arduino(port)
+    board.digital[UNL].write(0)
+    time.sleep(0.5)
+    board.digital[UNL].write(1)
+    time.sleep(0.5)
+    board.digital[UNL].write(0)
+    time.sleep(0.5)
+    board.digital[UNL].write(1)
+    time.sleep(0.5)
+    LocUL = "Unlocked"
+    return LocUL
 
     # def LockCar():
     #     board.digital[LOC].write(0)
