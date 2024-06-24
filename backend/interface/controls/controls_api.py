@@ -5,7 +5,7 @@ from backend.interface.models import Controls
 from sqlalchemy.orm import Session
 from typing import Annotated, List
 from datetime import datetime
-from backend.interface.controls.controls import test
+from backend.interface.controls.controls import test, UnlockCar
 
 class ControlStatusesBase(BaseModel):
     locked: bool = False
@@ -52,6 +52,7 @@ async def lock_car(db: db_dependany):
 @router.delete("/lock")
 async def unlock_car(db: db_dependany):
     db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
+    UnlockCar()
     update_status = {"locked": False}
     db_record |= update_status
     db_record = Controls(**db_record)
