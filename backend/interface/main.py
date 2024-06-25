@@ -22,7 +22,7 @@ app.add_middleware(
 
 @app.get("/version", tags=["Car-Interface"])
 async def get_car_interface_version():
-    return {"version": "0.0.1"}
+    return {"version": "0.0.9"}
 
 ## add routes here
 app.include_router(
