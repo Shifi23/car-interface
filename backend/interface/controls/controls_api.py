@@ -105,7 +105,7 @@ async def turn_on_lights(db: db_dependany):
 @router.delete("/lights", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def turn_off_lights(db: db_dependany):
     if controller:
-        controller.turn_on_parking_lights()
+        controller.turn_off_parking_lights()
         update_db(db, status={"lights_on": False})
         return 200
     else:
