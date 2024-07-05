@@ -7,6 +7,7 @@ class Controls(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     created_at = Column(TIMESTAMP, default=datetime.datetime.utcnow())
+    enabled = Column(Boolean)
     locked = Column(Boolean)
     lights_on = Column(Boolean)
     engine_on = Column(Boolean)
