@@ -13,7 +13,7 @@ from threading import Timer
 from multiprocessing import Process
 import requests
 import paho.mqtt.client as mqtt
-
+from backend.interface.database import update_db
 # from prometheus_client import start_http_server, REGISTRY, Gauge, Counter
 
 
@@ -248,11 +248,14 @@ class EcoflowMetric:
 
 
 class Worker:
-    def __init__(self, message_queue, device_name, collecting_interval_seconds=10):
+    def __init__(self, db, model, baseModel, message_queue, device_name, collecting_interval_seconds=5):
         self.message_queue = message_queue
         self.device_name = device_name
         self.collecting_interval_seconds = collecting_interval_seconds
         self.metrics_collector = []
+        self.db = db
+        self.model = model
+        self.baseModel = baseModel
         # self.online = Gauge("ecoflow_online", "1 if device is online", labelnames=["device"])
         # self.mqtt_messages_receive_total = Counter("ecoflow_mqtt_messages_receive_total", "total MQTT messages", labelnames=["device"])
 
@@ -268,8 +271,8 @@ class Worker:
                 log.info("Message queue is empty. Assuming that the device is offline")
                 # self.online.labels(device=self.device_name).set(0)
                 # Clear metrics for NaN (No data) instead of last value
-                for metric in self.metrics_collector:
-                    metric.clear()
+                # for metric in self.metrics_collector:
+                #     metric.clear()
 
             while not self.message_queue.empty():
                 payload = self.message_queue.get()
@@ -286,7 +289,12 @@ class Worker:
                     log.error(f"Failed to parse MQTT payload: {payload} Error: {error}")
                     continue
                 self.process_payload(params)
-                print(payload)
+                if payload["moduleType"] == "2":
+                    if payload["params"]["bms_bmsStatus.f32ShowSoc"]:
+                        data = {"battery_percentage": payload["params"]["bms_bmsStatus.f32ShowSoc"]}
+                        update_db(self.db, self.model, self.baseModel, data)
+
+                print(json.dumps(payload, indent=4))
 
             time.sleep(self.collecting_interval_seconds)
 
@@ -336,33 +344,33 @@ def signal_handler(signum, frame):
     sys.exit(0)
 
 
-def main():
+def start(db, model, baseModel):
     # Register the signal handler for SIGTERM
-    signal.signal(signal.SIGTERM, signal_handler)
+    # signal.signal(signal.SIGTERM, signal_handler)
 
     # Disable Process and Platform collectors
     # for coll in list(REGISTRY._collector_to_names.keys()):
     # REGISTRY.unregister(coll)
 
-    log_level = os.getenv("LOG_LEVEL", "INFO")
+    # log_level = os.getenv("LOG_LEVEL", "INFO")
 
-    match log_level:
-        case "DEBUG":
-            log_level = log.DEBUG
-        case "INFO":
-            log_level = log.INFO
-        case "WARNING":
-            log_level = log.WARNING
-        case "ERROR":
-            log_level = log.ERROR
-        case _:
-            log_level = log.INFO
+    # match log_level:
+    #     case "DEBUG":
+    #         log_level = log.DEBUG
+    #     case "INFO":
+    #         log_level = log.INFO
+    #     case "WARNING":
+    #         log_level = log.WARNING
+    #     case "ERROR":
+    #         log_level = log.ERROR
+    #     case _:
+    #         log_level = log.INFO
 
-    log.basicConfig(
-        stream=sys.stdout,
-        level=log_level,
-        format="%(asctime)s %(levelname)-7s %(message)s",
-    )
+    # log.basicConfig(
+    #     stream=sys.stdout,
+    #     level=log_level,
+    #     format="%(asctime)s %(levelname)-7s %(message)s",
+    # )
 
     device_sn = os.getenv("DEVICE_SN", "R601ZAB7XFA71759")
     device_name = os.getenv("DEVICE_NAME") or device_sn
@@ -397,7 +405,7 @@ def main():
         timeout_seconds,
     )
 
-    metrics = Worker(message_queue, device_name, collecting_interval_seconds)
+    metrics = Worker(db, model, baseModel, message_queue, device_name, collecting_interval_seconds)
 
     # start_http_server(exporter_port)
 
@@ -408,63 +416,66 @@ def main():
         log.info("Received KeyboardInterrupt. Exiting...")
         sys.exit(0)
 
+def stop():
+    sys.exit(0)
 
-if __name__ == "__main__":
-    main()
 
-    {
-        "addr": 0,
-        "cmdFunc": 0,
-        "cmdId": 0,
-        "id": 1741723762704646216,
-        "version": "1.0",
-        "timestamp": 1717499332,
-        "moduleType": "1",
-        "params": {
-            "pd.usb1Watts": 0,
-            "pd.qcUsb1Watts": 0,
-            "pd.wattsInSum": 0,
-            "pd.qcUsb2Watts": 0,
-            "pd.ext3p8Port": 0,
-            "pd.lcdOffSec": 300,
-            "pd.standbyMin": 30,
-            "pd.extRj45Port": 0,
-            "pd.beepMode": 0,
-            "pd.remainTime": 979,
-            "pd.typec2Watts": 0,
-            "pd.carWatts": 4,
-            "pd.ext4p8Port": 0,
-            "pd.brightLevel": 100,
-            "pd.chgDsgState": 0,
-            "pd.typec1Watts": 0,
-            "pd.usb2Watts": 0,
-            "pd.dcOutState": 0,
-            "pd.soc": 39,
-            "pd.carState": 1,
-            "pd.wattsOutSum": 4,
-        },
-    }
-{
-    "addr": 0,
-    "cmdFunc": 0,
-    "cmdId": 0,
-    "id": 1741723777155072002,
-    "version": "1.0",
-    "timestamp": 1717499334,
-    "moduleType": "2",
-    "params": {
-        "bms_bmsStatus.sysVer": 50397534,
-        "bms_bmsStatus.openBmsIdx": 1,
-        "bms_bmsStatus.num": 0,
-        "bms_bmsStatus.f32ShowSoc": 39.4,
-        "bms_bmsStatus.bmsFault": 0,
-        "bms_bmsStatus.soc": 39,
-        "bms_bmsStatus.outputWatts": 0,
-        "bms_bmsStatus.errCode": 0,
-        "bms_bmsStatus.inputWatts": 0,
-        "bms_bmsStatus.type": 1,
-        "bms_bmsStatus.remainCap": 7098,
-        "bms_bmsStatus.remainTime": 0,
-        "bms_bmsStatus.tagChgAmp": 20000,
-    },
-}
+# if __name__ == "__main__":
+#     main()
+
+#     {
+#         "addr": 0,
+#         "cmdFunc": 0,
+#         "cmdId": 0,
+#         "id": 1741723762704646216,
+#         "version": "1.0",
+#         "timestamp": 1717499332,
+#         "moduleType": "1",
+#         "params": {
+#             "pd.usb1Watts": 0,
+#             "pd.qcUsb1Watts": 0,
+#             "pd.wattsInSum": 0,
+#             "pd.qcUsb2Watts": 0,
+#             "pd.ext3p8Port": 0,
+#             "pd.lcdOffSec": 300,
+#             "pd.standbyMin": 30,
+#             "pd.extRj45Port": 0,
+#             "pd.beepMode": 0,
+#             "pd.remainTime": 979,
+#             "pd.typec2Watts": 0,
+#             "pd.carWatts": 4,
+#             "pd.ext4p8Port": 0,
+#             "pd.brightLevel": 100,
+#             "pd.chgDsgState": 0,
+#             "pd.typec1Watts": 0,
+#             "pd.usb2Watts": 0,
+#             "pd.dcOutState": 0,
+#             "pd.soc": 39,
+#             "pd.carState": 1,
+#             "pd.wattsOutSum": 4,
+#         },
+#     }
+# {
+#     "addr": 0,
+#     "cmdFunc": 0,
+#     "cmdId": 0,
+#     "id": 1741723777155072002,
+#     "version": "1.0",
+#     "timestamp": 1717499334,
+#     "moduleType": "2",
+#     "params": {
+#         "bms_bmsStatus.sysVer": 50397534,
+#         "bms_bmsStatus.openBmsIdx": 1,
+#         "bms_bmsStatus.num": 0,
+#         "bms_bmsStatus.f32ShowSoc": 39.4,
+#         "bms_bmsStatus.bmsFault": 0,
+#         "bms_bmsStatus.soc": 39,
+#         "bms_bmsStatus.outputWatts": 0,
+#         "bms_bmsStatus.errCode": 0,
+#         "bms_bmsStatus.inputWatts": 0,
+#         "bms_bmsStatus.type": 1,
+#         "bms_bmsStatus.remainCap": 7098,
+#         "bms_bmsStatus.remainTime": 0,
+#         "bms_bmsStatus.tagChgAmp": 20000,
+#     },
+# }
