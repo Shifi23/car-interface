@@ -289,12 +289,17 @@ class Worker:
                     log.error(f"Failed to parse MQTT payload: {payload} Error: {error}")
                     continue
                 self.process_payload(params)
-                if payload["moduleType"] == "2":
-                    if payload["params"]["bms_bmsStatus.f32ShowSoc"]:
-                        data = {"battery_percentage": payload["params"]["bms_bmsStatus.f32ShowSoc"]}
+                moduletype = payload["moduleType"]
+                metadata = payload["params"]
+                if moduletype == "2":
+                    if "bms_bmsStatus.f32ShowSoc" in metadata:
+                        data = {"battery_percentage": metadata["bms_bmsStatus.f32ShowSoc"]}
                         update_db(self.db, self.model, self.baseModel, data)
+                elif moduletype == "1":
+                    data = {"estimated_time": metadata["pd.remainTime"]/60, "dc_power_out": metadata["pd.carWatts"], "usb_c_power_out": metadata["pd.typec2Watts"]}
+                    update_db(self.db, self.model, self.baseModel, data)
 
-                print(json.dumps(payload, indent=4))
+                # print(json.dumps(payload, indent=4))
 
             time.sleep(self.collecting_interval_seconds)
 
