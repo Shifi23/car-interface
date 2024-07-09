@@ -292,8 +292,8 @@ class Worker:
                 moduletype = payload["moduleType"]
                 metadata = payload["params"]
                 if moduletype == "2":
-                    if "bms_bmsStatus.f32ShowSoc" in metadata:
-                        data = {"battery_percentage": metadata["bms_bmsStatus.f32ShowSoc"]}
+                    if "bms_bmsStatus.f32ShowSoc" and "bms_bmsStatus.remainCap" in metadata:
+                        data = {"battery_percentage": metadata["bms_bmsStatus.f32ShowSoc"], "battery_capacity": metadata["bms_bmsStatus.remainCap"]}
                         update_db(self.db, self.model, self.baseModel, data)
                 elif moduletype == "1":
                     data = {"estimated_time": metadata["pd.remainTime"]/60, "dc_power_out": metadata["pd.carWatts"], "usb_c_power_out": metadata["pd.typec2Watts"]}
