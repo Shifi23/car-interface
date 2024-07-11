@@ -47,5 +47,5 @@ jobs:
       - name: stop running containers
         run: docker stop $(docker ps -a -q)
       - name: start new container
-        run: docker run -d -p 8000:8000 --privileged shifi23/car-interface:latest
+        run: docker run -d -v /run/dbus:/run/dbus:ro -p 8000:8000 --privileged shifi23/car-interface:latest
       
