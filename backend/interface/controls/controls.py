@@ -61,7 +61,7 @@ class RelayController:
         self.controller.digital[IGN].write(0)
         time.sleep(1)
         self.controller.digital[SRT].write(0)
-        time.sleep(0.8)
+        time.sleep(0.9)
         self.controller.digital[SRT].write(1)
         time.sleep(1)
         self.controller.digital[PKL].write(0)
@@ -77,9 +77,11 @@ class RelayController:
 
     def turn_on_parking_lights(self):
         self.controller.digital[PKL].write(0)
+        self.controller.digital[INL].write(0)
 
     def turn_off_parking_lights(self):
         self.controller.digital[PKL].write(1)
+        self.controller.digital[INL].write(1)
     
     def flash_hazard_lights(self):
         pass
