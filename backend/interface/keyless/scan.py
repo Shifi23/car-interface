@@ -10,11 +10,24 @@ scanning_enabled = False
 # Define your lock and unlock functions (replace with actual functions)
 async def lock_car():
     print("Locking car doors...")
-    # Implement your logic to lock the car doors here
+    url = 'http://localhost:8000/controls/lock'
+    headers = {
+    'accept': 'application/json'
+    }
+    data = {}
+    response = requests.post(url, headers=headers, json=data)
+    print(response.status_code)
+
 
 async def unlock_car():
     print("Unlocking car doors...")
-    # Implement your logic to unlock the car doors here
+    url = 'http://localhost:8000/controls/lock'
+
+    headers = {
+    'accept': 'application/json'
+    }
+    response = requests.delete(url, headers=headers)
+    print(response.status_code)
 
 async def scan_for_phone():
     global scanning_enabled
