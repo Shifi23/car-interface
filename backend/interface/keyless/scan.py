@@ -8,9 +8,9 @@ PHONE_DEVICE_ADDRESS = "5C:17:CF:D4:EE:6B"  # Replace with your phone's address
 scanning_enabled = False
 
 # Define your lock and unlock functions (replace with actual functions)
-async def lock_car():
+def lock_car():
     print("Locking car doors...")
-    url = 'http://localhost:8000/controls/lock'
+    url = 'http://127.0.0.1:8000/controls/lock'
     headers = {
     'accept': 'application/json'
     }
@@ -19,14 +19,14 @@ async def lock_car():
     print(response.status_code)
 
 
-async def unlock_car():
+def unlock_car():
     print("Unlocking car doors...")
-    url = 'http://localhost:8000/controls/lock'
+    url = 'http://0.0.0.0:8000/controls/lock'
 
     headers = {
     'accept': 'application/json'
     }
-    response = requests.delete(url, headers=headers)
+    response = requests.delete(url, headers=headers, timeout=5.50)
     print(response.status_code)
 
 async def scan_for_phone():
@@ -41,11 +41,11 @@ async def scan_for_phone():
 
         
         if phone_nearby and locked:
-            await unlock_car()
+            unlock_car()
             locked = False
 
         elif not phone_nearby and not locked:
-            await lock_car()
+            lock_car()
             locked = True
         
         await asyncio.sleep(2)  # Adjust the scanning interval as needed

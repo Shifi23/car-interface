@@ -68,7 +68,7 @@ async def lock_car(db: db_dependany):
 async def unlock_car(db: db_dependany):
     if controller:
         controller.unlock_car()
-        update_db(db, Controls, ControlStatusesBase, newData={"locked": True})
+        update_db(db, Controls, ControlStatusesBase, newData={"locked": False})
         return 200
     else:
         return Response(content="controls not enabled", status_code=400)
