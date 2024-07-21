@@ -32,7 +32,7 @@ def get_latest_iteration(db, model, baseModel):
 
 def update_db(db, model, baseModel, newData):
     if not db.query(model).order_by(model.id.desc()).first():
-        get_latest_iteration(db)
+        get_latest_iteration(db, model, baseModel)
     db_record = baseModel(**db.query(model).order_by(model.id.desc()).first().__dict__).model_dump()
     db_record |= newData
     db_record = model(**db_record)

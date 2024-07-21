@@ -47,7 +47,7 @@ class OBD(Base):
     mass_airflow_rate = Column(Float)
     throttle_position = Column(Float)
     engine_load = Column(Float)
-    dtc = Column(list)
+    dtc = Column(String)
 
 
 
