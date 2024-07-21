@@ -1,5 +1,5 @@
 version: "2"
-authtoken: 23aSMK5bnY4b5SyuU0plxk50F97_26d3akpjPKgrZdEYyrgPw
+authtoken: "authtoken from Ngrok Account"
 tunnels:
   api:
     proto: http

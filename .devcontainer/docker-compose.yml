@@ -12,3 +12,4 @@ services:
     tty: true
     volumes:
      - ..:/workspaces/car-interface:cached
+     - /run/dbus:/run/dbus:ro

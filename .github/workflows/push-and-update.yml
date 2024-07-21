@@ -7,7 +7,7 @@ on:
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
-    runs-on: carpi-5
+    runs-on: homepi-4
     permissions:
       packages: write
       contents: read
@@ -47,5 +47,5 @@ jobs:
       - name: stop running containers
         run: docker stop $(docker ps -a -q)
       - name: start new container
-        run: docker run -d -p 8000:8000 --privileged shifi23/car-interface:latest
+        run: docker run -d -v /run/dbus:/run/dbus:ro -p 8000:8000 --privileged shifi23/car-interface:latest
       

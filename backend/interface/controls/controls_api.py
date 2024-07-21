@@ -1,13 +1,14 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
-from backend.interface.database import get_db
+from backend.interface.database import get_db, get_latest_iteration, update_db
 from backend.interface.models import Controls
 from sqlalchemy.orm import Session
 from typing import Annotated, List
 from datetime import datetime
-from backend.interface.controls.controls import test
+from backend.interface.controls.controls import RelayController
 
 class ControlStatusesBase(BaseModel):
+    enabled: bool = False
     locked: bool = False
     lights_on: bool = False
     engine_on: bool = False
@@ -19,88 +20,91 @@ class ControlStatuses(ControlStatusesBase):
     class Config:
         from_attributes = True
 
+controller = None
+
 db_dependany = Annotated[Session, Depends(get_db)]
 router = APIRouter(tags=["Controls"])
 
-def get_latest_iteration(db: db_dependany):
-    if not db.query(Controls).order_by(Controls.id.desc()).first():
-        db_record = Controls(**ControlStatusesBase().model_dump())
-        db.add(db_record)
-        db.commit()
-        db.refresh(db_record)
-        return db.query(Controls).order_by(Controls.id.desc()).first().__dict__
-    else:
-        return db.query(Controls).order_by(Controls.id.desc()).first().__dict__
-    
 
 @router.get("/status", response_model=ControlStatuses)
 async def get_control_statuses(db: db_dependany):
-    statues = get_latest_iteration(db)
+    statues = get_latest_iteration(db, Controls, ControlStatusesBase)
     return statues
 
-@router.post("/lock")
+@router.post("/enable", responses={200: {"description": "success"}, 400:{"description": "handshake with relay controller unsuccessful"}})
+async def enable_controls(db: db_dependany):
+    try:
+        global controller
+        controller = RelayController()
+        update_db(db, Controls, ControlStatusesBase, newData={"enabled": True})
+    except Exception as e:
+        controller = None
+        return Response(content="handshake with relay controller unsuccessful", status_code=400)
+
+    return 200
+
+@router.delete("/enable", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
+async def disable_controls(db: db_dependany):
+    try:
+        global controller
+        controller.__del__()
+        update_db(db, Controls, ControlStatusesBase, newData={"enabled": False})
+    except Exception as e:
+        controller = None
+        return Response(content="controls was not disabled", status_code=400)
+        
+    return 200
+
+@router.post("/lock", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def lock_car(db: db_dependany):
-    db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
-    update_status = {"locked": True}
-    db_record |= update_status
-    db_record = Controls(**db_record)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return 200
+    if controller:
+        controller.lock_car()
+        update_db(db, Controls, ControlStatusesBase, newData={"locked": True} )
+        return 200
+    else:
+        return Response(content="controls not enabled", status_code=400)
 
-@router.delete("/lock")
+@router.delete("/lock", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def unlock_car(db: db_dependany):
-    db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
-    update_status = {"locked": False}
-    db_record |= update_status
-    db_record = Controls(**db_record)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return 200
+    if controller:
+        controller.unlock_car()
+        update_db(db, Controls, ControlStatusesBase, newData={"locked": False})
+        return 200
+    else:
+        return Response(content="controls not enabled", status_code=400)
 
-@router.post("/lights")
+@router.post("/lights", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def turn_on_lights(db: db_dependany):
-    db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
-    test()
-    update_status = {"lights_on": True}
-    db_record |= update_status
-    db_record = Controls(**db_record)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return 200
+    if controller:
+        controller.turn_on_parking_lights()
+        update_db(db, Controls, ControlStatusesBase, newData={"lights_on": True})
+        return 200
+    else:
+        return Response(content="controls not enabled", status_code=400)
 
-@router.delete("/lights")
+@router.delete("/lights", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def turn_off_lights(db: db_dependany):
-    db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
-    update_status = {"lights_on": False}
-    db_record |= update_status
-    db_record = Controls(**db_record)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return 200
+    if controller:
+        controller.turn_off_parking_lights()
+        update_db(db, Controls, ControlStatusesBase, newData={"lights_on": False})
+        return 200
+    else:
+        return Response(content="controls not enabled", status_code=400)
 
-@router.post("/engine")
+@router.post("/engine", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def turn_on_engine(db: db_dependany):
-    db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
-    update_status = {"engine_on": True}
-    db_record |= update_status
-    db_record = Controls(**db_record)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return 200
+    if controller:
+        controller.start_engine()
+        update_db(db, Controls, ControlStatusesBase, newData={"engine_on": True})
+        return 200
+    else:
+        return Response(content="controls not enabled", status_code=400)
 
-@router.delete("/engine")
+@router.delete("/engine", responses={200: {"description": "success"}, 400:{"description": "controls was not enabled"}})
 async def turn_off_engine(db: db_dependany):
-    db_record = ControlStatusesBase(**db.query(Controls).order_by(Controls.id.desc()).first().__dict__).model_dump()
-    update_status = {"engine_on": False}
-    db_record |= update_status
-    db_record = Controls(**db_record)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return 200
+    if controller:
+        controller.stop_engine()
+        update_db(db, Controls, ControlStatusesBase, newData={"engine_on": False})
+        return 200
+    else:
+        return Response(content="controls not enabled", status_code=400)
