@@ -57,14 +57,12 @@ class RelayController:
 
     def start_engine(self):
         self.controller.digital[KSN].write(0)
-        time.sleep(1)
+        time.sleep(2)
         self.controller.digital[IGN].write(0)
-        time.sleep(1)
+        time.sleep(2)
         self.controller.digital[SRT].write(0)
         time.sleep(0.9)
         self.controller.digital[SRT].write(1)
-        time.sleep(1)
-        self.controller.digital[PKL].write(0)
         time.sleep(1)
         self.controller.digital[ACC].write(0)
 
