@@ -1,11 +1,15 @@
 version: "1.0"
 
 services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
   car-interface:
     build:
       context: ./
       dockerfile: Dockerfile
-
     command: sleep infinity
     privileged: true
     network_mode: "host"
@@ -13,3 +17,24 @@ services:
     volumes:
      - ..:/workspaces/car-interface:cached
      - /run/dbus:/run/dbus:ro
+    depends_on:
+     - redis
+  celery_worker:
+    container_name: celery_worker
+    build: .
+    command: celery -A celery_worker worker --pool=solo --loglevel=info
+    volumes:
+      - ..:/workspaces/car-interface:cached
+    depends_on:
+      - redis
+      - car-interface
+  flower:
+    container_name: flower
+    build: .
+    command: celery -A celery_worker flower --port=5555
+    ports:
+      - 5556:5555
+    depends_on:
+      - car-interface
+      - redis
+      - celery_worker

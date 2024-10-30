@@ -16,6 +16,9 @@ pyfirmata2 = "^2.4.5"
 requests = "^2.32.3"
 paho-mqtt = "^2.1.0"
 bleak = "^0.22.2"
+redis = "^5.2.0"
+celery = "^5.4.0"
+flower = "^2.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
