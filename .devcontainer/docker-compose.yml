@@ -19,22 +19,22 @@ services:
      - /run/dbus:/run/dbus:ro
     depends_on:
      - redis
-  celery_worker:
-    container_name: celery_worker
-    build: .
-    command: celery -A backend.interface.celery_config.celery_app worker --loglevel=info
-    volumes:
-      - ..:/workspaces/car-interface:cached
-    depends_on:
-      - redis
-      - car-interface
-  flower:
-    container_name: flower
-    build: .
-    command: celery -A backend.interface.celery_config.celery_app flower --port=5555
-    ports:
-      - 5556:5555
-    depends_on:
-      - car-interface
-      - redis
-      - celery_worker
+#  celery_worker:
+#    container_name: celery_worker
+#    build: .
+#    command: celery -A backend.interface.celery_config.celery_app worker --loglevel=info
+#    volumes:
+#      - ..:/workspaces/car-interface:cached
+#    depends_on:
+#      - redis
+#      - car-interface
+#  flower:
+#    container_name: flower
+#    build: .
+#    command: celery -A backend.interface.celery_config.celery_app flower --port=5555
+#    ports:
+#      - 5556:5555
+#    depends_on:
+#      - car-interface
+#      - redis
+#      - celery_worker
