@@ -13,9 +13,9 @@ WORKDIR /app
 COPY . /app
 
 RUN apt-get -y update
-RUN apt-get -y install git
+RUN apt-get -y install git redis
 RUN apt-get -y install gcc python3-dev libbluetooth-dev bluetooth python3-bluez
-RUN pip install celery
+RUN pip install celery kombu
 
 RUN poetry config virtualenvs.in-project true && \
     echo 'source $(poetry env info --path)/bin/activate' >> /root/.bashrc

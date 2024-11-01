@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.interface.database import engine
 import backend.interface.models
 from backend.interface.tasks import test
-from backend.interface.celery_utils import make_celery
 
 
 backend.interface.models.Base.metadata.create_all(bind=engine)
@@ -23,7 +22,6 @@ app.add_middleware(
 )
 
 
-make_celery()
 
 
 
@@ -31,7 +29,7 @@ make_celery()
 @app.get("/version", tags=["Car-Interface"])
 async def get_car_interface_version():
     task = test.delay(1,2)
-    return {"version": "0.2.0", "result": task.id()}
+    return {"version": "0.2.0", "result": task.status()}
         
 ## add routes here
 app.include_router(
