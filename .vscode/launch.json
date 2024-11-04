@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: FastAPI",
+            "name": "car-interface-FastAPI",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
@@ -15,6 +15,44 @@
                 "--reload"
             ],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "car-interface-worker",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "args": [
+                "-A",
+                "backend.interface.celery_config.celery_app",
+                "worker",
+                "--loglevel=info"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "car-interface-flower",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "args": [
+                "-A",
+                "backend.interface.celery_config.celery_app",
+                "flower",
+                "--port=5555"
+            ],
+            "console": "integratedTerminal",
+        }
+    ],
+    "compounds": [
+        {
+            "name": "car-interface",
+            "configurations": ["car-interface-FastAPI","car-interface-worker","car-interface-flower"],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "",
+                "order": 1
+            }
         }
     ]
 }
