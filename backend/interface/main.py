@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from backend.interface.controls import controls_api
 from backend.interface.obd import obd_api
 from backend.interface.ecoflow import ecoflow_api
@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.interface.database import engine
 import backend.interface.models
 from backend.interface.tasks import test
+from backend.interface.redis_connection import get_redis_client
 
 
 backend.interface.models.Base.metadata.create_all(bind=engine)
@@ -21,6 +22,7 @@ app.add_middleware(
     allow_origins=origins
 )
 
+redis_client = get_redis_client()
 
 
 
@@ -28,6 +30,14 @@ app.add_middleware(
 
 @app.get("/version", tags=["Car-Interface"])
 async def get_car_interface_version():
+    if redis_client.get("test_lock"):
+        # Task is locked; return status response
+        raise HTTPException(
+            status_code=409,  # 409 Conflict
+            detail="Task is already in progress"
+        )
+
+
     task = test.delay(1,2)
     return {"version": "0.2.0", "result": task.status}
         
