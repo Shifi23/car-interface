@@ -1,0 +1,21 @@
+name: Keep Runners Alive
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Runs every day at 04:00 UTC
+  workflow_dispatch:      # Allows manual trigger as needed
+
+jobs:
+  keep-runner-homepi-4-alive:
+    name: Keep Runner on homepi-4 Alive
+    runs-on: homepi-4
+    steps:
+      - name: Pinging Runner 1
+        run: echo "Runner on homepi-4 is alive at $(date)"
+
+  keep-runner-carpi-4-alive:
+    name:  Keep Runner on carpi-4 Alive
+    runs-on: carpi-4
+    steps:
+      - name: Pinging Runner 2
+        run: echo "Runner on carpi-4 is alive at $(date)"
