@@ -8,14 +8,14 @@ on:
 jobs:
   keep-runner-homepi-4-alive:
     name: Keep Runner on homepi-4 Alive
-    runs-on: homepi-4
+    runs-on: [self-hosted, homepi-4]
     steps:
       - name: Pinging Runner 1
         run: echo "Runner on homepi-4 is alive at $(date)"
 
   keep-runner-carpi-4-alive:
     name:  Keep Runner on carpi-4 Alive
-    runs-on: carpi-4
+    runs-on: [self-hosted, carpi-4]
     steps:
       - name: Pinging Runner 2
         run: echo "Runner on carpi-4 is alive at $(date)"
